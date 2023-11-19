@@ -1,0 +1,64 @@
+.ui-layout-north {
+    z-index: 20 !important;
+    overflow: visible !important;
+}
+
+.ui-layout-north .ui-layout-unit-content {
+    overflow: visible !important;
+}
+
+.ui-layout-unit {
+    border-width: 0 !important;
+}
+
+.ui-selectonemenu {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.ui-slider-handle {
+    width: 1em;
+    height: 1em;
+    top: -0.2em;
+    border-radius: 10px;
+}
+
+.uppercase {
+    text-transform: uppercase;
+}
+
+.contentLayout {
+    border-collapse: collapse;
+    border-width: 0px;
+}
+
+.noBorderPanel tr, .noBorderPanel td {
+    border-width: 0px !important;
+}
+
+.borderPanel tr, .borderPanel td {
+    border-width: 1px !important;
+}
+
+.noWrapPanel {
+    white-space: nowrap;
+}
+
+.fieldInput {
+    width: 120px !important;
+}
+
+.fieldCalendar input {
+    width: 100px !important;
+}
+
+.fieldSelect {
+    width: 120px !important;
+}
+
+.errorMessagePanel {
+    margin: auto;
+    width: 400px;
+    font-size: 14px !important;
+    text-align: center;
+}

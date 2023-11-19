@@ -1,0 +1,107 @@
+import React, { useState, useEffect, useSelector } from "react";
+
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+
+import "./App.css";
+
+
+// REDUX
+import store from "./store";
+import {selectUserData} from "./redux/selectors/userSelectors";
+import { updateUser } from "./redux/actions/user";
+
+// SERVICES
+import AuthService from "./services/auth.service";
+
+// FROM VALIDATION SCHEMA)
+const schema = yup.object().shape({
+	email: yup.string().email().required(),
+	password: yup.string().min(8).max(32).required(),
+});
+		
+function App() {
+	
+	
+	const [currentUser, setCurrentUser] = useState(null);
+	const [username, setUsername] = useState('');
+	  
+	//   
+	const { register, handleSubmit, formState: { errors }, reset } = useForm({
+	    resolver: yupResolver(schema),
+	});
+	
+	// SUBMIT HANDLER
+	const onSubmitHandler = (data) => {
+	    console.log({ data });
+	    reset();
+  	};
+  
+  
+	// Similar to componentDidMount and componentDidUpdate:
+	useEffect(() => {
+		// Update the document title using the browser API
+	    //store.dispatch(updateUser({username:"tritran"}));
+	    //alert("STATE:" + JSON.stringify(store.getState().user.userData));
+	    //alert("SELECT STATE:" + JSON.stringify(selectUserData(store.getState())));
+	    setCurrentUser(selectUserData(store.getState()));
+	    
+	   
+    
+	}, []); // Add empty array to force it run only one time.  no repeat after render
+
+
+
+	 const handleChange = event => {
+	    setUsername(event.target.value);
+	  };
+	
+	 const handleClick = event => {
+	    event.preventDefault();
+	    store.dispatch(updateUser({username:username}));
+		setCurrentUser(selectUserData(store.getState()));	
+	  };
+	
+	  return (
+	    <div>
+	      <input
+	        type="text"
+	        id="username"
+	        name="username"
+	        onChange={handleChange}
+	        value={username}
+	      />
+	
+	      <h2>CURRENT USERNAME: {currentUser!=null? currentUser.username:"NO USER"}</h2>
+	
+	      <button onClick={handleClick}>Update User</button>
+	      
+	      
+	      <div>
+	       <form onSubmit={handleSubmit(onSubmitHandler)}>
+			      <h2>Lets sign you in.</h2>
+			      <br />
+			
+			      <input {...register("email")} placeholder="email" type="email" required />
+			      <p>{errors.email?.message}</p>
+			      <br />
+			
+			      <input  {...register("password")} placeholder="password" type="password"    required />
+			      <p>{errors.password?.message}</p>
+			      <br />
+			
+			      <button type="submit">Sign in</button>
+		    </form>
+	      </div>
+	    </div>
+	  );
+
+
+
+
+
+  
+}
+
+export default App;
