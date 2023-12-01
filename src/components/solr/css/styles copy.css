@@ -1,0 +1,31 @@
+.App {
+    font-family: sans-serif;
+    text-align: center;
+    background-color: aquamarine;
+    border-style: solid;
+    border-color: black;
+    border-left-color: rgb(213, 205, 255);
+    border-right-color: rgb(213, 205, 255);
+    border-top-color: rgb(213, 205, 255);
+    height: 20%;
+    width: 100%;
+  }
+  
+  .Title {
+    font-family: cursive;
+    text-align: center;
+    font-size: 35px;
+    color: forestgreen;
+  }
+  
+  .queryForm {
+    background-color: navajowhite;
+    width: 100%;
+  }
+  
+  .searchQ {
+    background-color: rgb(137, 175, 66);
+    width: 100%;
+    text-align: left;
+  }
+  

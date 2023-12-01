@@ -2,8 +2,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">  
   
   <modelVersion>4.0.0</modelVersion>
-  <groupId>com.cidr.react</groupId>
-  <artifactId>react-redux-demo</artifactId>
+  <groupId>react.bootstrap.demo</groupId>
+  <artifactId>react-bootstrap-demo</artifactId>
   
   <version>1.0-SNAPSHOT</version>
   <packaging>war</packaging>
@@ -14,7 +14,7 @@
     </properties>
 
     <build>
-        <finalName>react-redux-demo</finalName>
+        <finalName>react-bootstrap-demo</finalName>
         <plugins>
             <!-- Standard plugin to generate WAR -->
             <plugin>
@@ -103,8 +103,8 @@
 					<artifactId>maven-war-plugin</artifactId>
 					<version>2.6</version>
 					<configuration>
-						<warName>cidr-react-menu-login</warName>
-						<outputDirectory>/home/trancha/bin/apache-tomcat-9.0.59/webapps</outputDirectory>
+						<warName>react-bootstrap-demo</warName>
+						<outputDirectory>/home/trantri/bin/apache-tomcat-9.0.59-reactjs/webapps</outputDirectory>
 					</configuration>
 				</plugin>
         </plugins>

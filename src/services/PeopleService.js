@@ -102,7 +102,7 @@ class PeopleService {
     console.log("GET DOCS SERVICE STARTS - URL:" + http.BASE_URL);
 
     try {
-      let res = await axios.get(http.BASE_URL + "/docs/" + id);
+      let res = await axios.get(http.BASE_URL + "/api/docs/" + id);
       return res;
     } catch (error) {
       console.log("Get DOCS ERROR:" + error.message);

@@ -7,10 +7,13 @@ import PeopleAdd from "./components/PeopleAdd";
 import PeopleSearch from "./components/PeopleSearch";
 import MenuBar from "./components/MenuBar";
 import Registration from "./components/Registration";
+import SolrDemo from "./components/SolrDemo";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 
 import "./App.css";
+
+import * as constants from "./common/Constants";
 
 // FROM VALIDATION SCHEMA)
 
@@ -23,11 +26,24 @@ function App() {
       <Router>
         <MenuBar />
         <Switch>
-          <Route exact path="/" component={Home} />
-          <Route path="/about" component={About} />
-          <Route path="/peopleAdd" component={PeopleAdd} />
-          <Route path="/peopleSearch" component={PeopleSearch} />
-          <Route path="/registration" component={Registration} />
+          <Route exact path={"/" + constants.APP_NAME} component={Home} />
+          <Route path={"/" + constants.APP_NAME + "/about"} component={About} />
+          <Route
+            path={"/" + constants.APP_NAME + "/peopleAdd"}
+            component={PeopleAdd}
+          />
+          <Route
+            path={"/" + constants.APP_NAME + "/peopleSearch"}
+            component={PeopleSearch}
+          />
+          <Route
+            path={"/" + constants.APP_NAME + "/registration"}
+            component={Registration}
+          />
+          <Route
+            path={"/" + constants.APP_NAME + "/solrDemo"}
+            component={SolrDemo}
+          />
         </Switch>
       </Router>
     </div>
