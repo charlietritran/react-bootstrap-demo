@@ -248,6 +248,7 @@ const PeopleSearch = () => {
         <PeopleEdit
           show={showModalEdit}
           person={person}
+          fn={person.firstname}
           onHide={() => setShowModalEdit(false)}
         />
       </div>

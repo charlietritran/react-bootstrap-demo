@@ -37,22 +37,6 @@ const PeopleEdit = (props) => {
   const [gender, setGender] = useState("");
   const [documents, setDocuments] = useState("");
 
-  const firstnameRef = useRef();
-  firstnameRef.current = props.person.firstname;
-
-  const lastnameRef = useRef();
-  lastnameRef.current = props.person.lastname;
-
-  const birthdateRef = useRef();
-  birthdateRef.current = props.person.birthdate;
-
-  const genderRef = useRef();
-  genderRef.current = props.person.gender;
-
-  const documentsRef = useRef();
-  documentsRef.current = props.person.documents;
-
-
   const validationSchema = Yup.object().shape({
     firstname: Yup.string().required("First Name is required"),
     lastname: Yup.string().required("Last Name is required"),
@@ -142,7 +126,8 @@ const PeopleEdit = (props) => {
                   <input
                     name="firstname"
                     type="text"
-                    defaultValue = {firstnameRef.current}
+                    value = {props.person.firstname}
+                    //onChange={onChangeFirstname} 
                     {...register("firstname")}
                     className={`form-control ${
                       errors.firstname ? "is-invalid" : ""
@@ -155,7 +140,7 @@ const PeopleEdit = (props) => {
                   <input
                     name="lastname"
                     type="text"
-                    defaultValue = {lastnameRef.current}
+                    value={props.person.lastname}
                     {...register("lastname")}
                     className={`form-control ${
                       errors.lastname ? "is-invalid" : ""
@@ -169,7 +154,7 @@ const PeopleEdit = (props) => {
                   <input
                     name="birthdate"
                     type="date"
-                    defaultValue = {birthdateRef.current}
+                    value={props.person.birthdate}
                     {...register("birthdate")}
                     className={`form-control ${
                       errors.birthdate ? "is-invalid" : ""
@@ -184,7 +169,7 @@ const PeopleEdit = (props) => {
                     className="form-select"
                     name="gender"
                     {...register("gender")}
-                    defaultValue = {genderRef.current}
+                    value={props.person.gender}
                   >
                     <option value="Male">Male</option>
                     <option value="Female">Female</option>
@@ -198,6 +183,7 @@ const PeopleEdit = (props) => {
                     type="file"
                     name="documents"
                     multiple
+                    //onChange={handleOnChange}
                     {...register("documents")}
                     className={`form-control`}
                   />

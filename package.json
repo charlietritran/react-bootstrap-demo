@@ -2,6 +2,7 @@
   "name": "react-bootstrap-demo",
   "version": "0.1.0",
   "private": true,
+  "proxy": "http://localhost:8087/",
   "dependencies": {
     "@hookform/resolvers": "^3.3.2",
     "@testing-library/jest-dom": "^5.16.4",
