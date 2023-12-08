@@ -1,12 +1,8 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState , useEffect} from "react";
 import Button from "react-bootstrap/Button";
-//import Modal from "react-bootstrap/Modal";
 
-import { Col, Container, Modal } from "react-bootstrap";
-import PropTypes from "prop-types";
-
+import { Container, Modal } from "react-bootstrap";
 import { useForm } from "react-hook-form";
-
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 
@@ -54,6 +50,13 @@ const Home = () => {
     console.log("ONCHANGE:" + e.target.value)
     setFirstname(e.target.value);
   };
+
+  useEffect(() => {
+    console.log("USE-EFFECT IS CALLED ");
+    
+
+  }, []); // Add empty array to force it run only one time.  no repeat after render
+
 
   return (
     <>

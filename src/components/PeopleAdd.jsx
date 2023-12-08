@@ -39,7 +39,7 @@ const PeopleAdd = () => {
   const [people, setPeople] = useState([]);
   const [person, setPerson] = useState([]);
 
-  // Data form
+  // form fields
   const [firstname, setFirstname] = useState("");
   const [lastname, setLastname] = useState("");
   const [birthdate, setBirthdate] = useState(
@@ -48,14 +48,13 @@ const PeopleAdd = () => {
   const [gender, setGender] = useState("");
   const [documents, setDocuments] = useState("");
   const [uploadFiles, setUploadFiles] = useState([]);
+  const [fileNames, setFileNames] = useState([
+    { name: "f1" },
+    { name: "f2" },
+    { name: "f3" },
+  ]);
 
   const [docInfos, setDocInfos] = useState([]);
-
-
-  const [showModalDelConfirm, setShowModalDelConfirm] = useState(false);
-  const [showModalDelResult, setShowModalDelResult] = useState(false);
-
-
   const [fileUploadRerenderKey, setFileUploadRerenderKey] = useState(
     Math.random()
   );
@@ -63,6 +62,8 @@ const PeopleAdd = () => {
   // for Modal dialog
   const [show, setShow] = useState(false);
   const [modalShow, setModalShow] = useState(false);
+  const [showModalDelConfirm, setShowModalDelConfirm] = useState(false);
+  const [showModalDelResult, setShowModalDelResult] = useState(false);
 
   const validationSchema = Yup.object().shape({
     firstname: Yup.string().required("First Name is required"),
@@ -94,10 +95,6 @@ const PeopleAdd = () => {
     console.log(data);
 
     console.log(JSON.stringify(data, null, 2));
-    setFirstname(data.firstname);
-    setLastname(data.lastname);
-    setBirthdate(data.birthdate);
-    setGender(data.gender);
 
     // data wrapper
     var jsontxt = {
@@ -115,9 +112,6 @@ const PeopleAdd = () => {
       jsontxt,
       uploadFiles
     );
-
-    console.log("SERVICE RETURN id:" + response.data.id);
-    console.log("SERVICE RETURN firstname:" + response.data.firstname);
 
     // If success, notify and reset fields
     if (response.data) {
@@ -143,17 +137,18 @@ const PeopleAdd = () => {
   useEffect(() => {}, []); // Add empty array to force it run only one time.  no repeat after render
 
   /**
-   * Load person
+   * Load current selected record into var
    * @param {*} id
    */
-  const loadPerson = (id) => {
-    peopleService.getPersonById(id).then((result) => {
+  const loadPerson = async (id) => {
+    console.log("LOAD PERSON - owId:" + id);
+    await peopleService.getPersonById(id).then((result) => {
       console.log(result.data);
       setPerson(result.data);
     });
   };
 
-/**
+  /**
    * HANDLE DELETE BUTTON
    * @param {*} rowId
    * @param {*} name
@@ -176,7 +171,6 @@ const PeopleAdd = () => {
 
       setPeople([]);
       setShowModalDelResult(true);
-
     });
   };
 
@@ -219,11 +213,7 @@ const PeopleAdd = () => {
       temp.push(element);
     });
     setUploadFiles(temp);
-
-
   };
-
-
 
   // Result table columns
   const columns = [
@@ -321,7 +311,7 @@ const PeopleAdd = () => {
               <input
                 name="birthdate"
                 type="date"
-                defaultValue={birthdate}
+                defaultValue={new Date().toISOString().slice(0, 10)}
                 {...register("birthdate")}
                 className={`form-control ${
                   errors.birthdate ? "is-invalid" : ""
@@ -342,25 +332,11 @@ const PeopleAdd = () => {
               </select>
             </div>
           </div>
-          {/**  
-           * <div className="row">
-            <div className="form-group w-25">
-              <label>Documents</label>
-              <input
-                type="file"
-                name="documents"
-                multiple
-                onChange={handleOnChange}
-                {...register("documents")}
-                className={`form-control`}
-              />
-            </div>
-          </div>
-          */}
 
           <div className="row">
             <div className="form-group w-50">
               <label>Documents</label>
+
               <FileUploadEx
                 key={fileUploadRerenderKey}
                 callback={uploadCallback}
@@ -375,7 +351,14 @@ const PeopleAdd = () => {
               </button>
               <button
                 type="button"
-                onClick={reset}
+                onClick={() =>
+                  reset({
+                    firstname: "",
+                    lastname: "",
+                    birthdate: new Date().toISOString().slice(0, 10),
+                    gender: "Male",
+                  })
+                }
                 className="btn btn-warning float-right"
               >
                 Reset

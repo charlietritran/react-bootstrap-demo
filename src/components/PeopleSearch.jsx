@@ -40,7 +40,7 @@ const PeopleSearch = () => {
    * INITIALLY EXECUTE BY DEFAULT AT PAGE REANDER
    */
   useEffect(() => {
-      loadPeople();
+    loadPeople();
   }, []); // Add empty array to force it run only one time.  no repeat after render
 
   // DEFINE COLUMN HEADERS OR TABLE
@@ -48,7 +48,7 @@ const PeopleSearch = () => {
     {
       dataField: "id",
       text: "Person ID",
-      sort: true
+      sort: true,
     },
     {
       dataField: "firstname",
@@ -122,13 +122,11 @@ const PeopleSearch = () => {
    * LOAD PEOPLE LIST
    */
   const loadPeople = () => {
-
     peopleService.getPeople().then((result) => {
       console.log(result.data);
 
       if (result.data) {
         result.data.forEach((element) => {
-
           // build htmp tags data for documents
           if (element) {
             const files = element.documents.split(",");
@@ -140,21 +138,20 @@ const PeopleSearch = () => {
             ));
             element.documents = docs;
           }
-
         });
       }
 
       setPeople(result.data);
     });
-  }
+  };
 
   /**
    * Load current selected record into var
    * @param {*} id
    */
-  const loadPerson = (id) => {
-    //console.log("rowId:" + props.rowId);
-    peopleService.getPersonById(id).then((result) => {
+  const loadPerson = async (id) => {
+    console.log("LOAD PERSON - owId:" + id);
+    await peopleService.getPersonById(id).then((result) => {
       console.log(result.data);
       setPerson(result.data);
     });
@@ -181,22 +178,9 @@ const PeopleSearch = () => {
     peopleService.deletePerson(person.id).then((result) => {
       console.log("Done delete person:" + result.data);
 
-      // reload the list
-      /*peopleService.getPeople().then((result) => {
-        console.log(result.data);
-        setPeople(result.data);
-      });*/
       loadPeople();
 
       setShowModalDelResult(true);
-
-      // this popup is working but not smooth and not consistent
-      /*Swal.fire({
-        title: "Success!",
-        text: "Record has been deleted.",
-        icon: "success",
-        confirmButtonText: "Cool",
-      });*/
     });
   };
 

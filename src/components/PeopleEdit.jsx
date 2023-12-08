@@ -7,16 +7,13 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 
-
-
 import "bootstrap/dist/css/bootstrap.css";
 import "react-bootstrap-table-next/dist/react-bootstrap-table2.min.css";
 
 // SERVICES
 
 import PeopleService from "../services/PeopleService.js";
-
-
+import FileUploadEx from "./FileUploadEx";
 
 /** /////////////////////////////////////////////////////////////////
  * COMPONENT: People Add
@@ -29,29 +26,14 @@ import PeopleService from "../services/PeopleService.js";
  */ ////////////////////////////////////////////////////////////////
 const PeopleEdit = (props) => {
 
+  console.log("PEOPLE EDIT IS ACCESSED:" + JSON.stringify(props));
   const peopleService = new PeopleService();
+  const [fileUploadRerenderKey, setFileUploadRerenderKey] = useState(
+    Math.random()
+  );
 
-  const [firstname, setFirstname] = useState("");
-  const [lastname, setLastname] = useState("");
-  const [birthdate, setBirthdate] = useState("");
-  const [gender, setGender] = useState("");
-  const [documents, setDocuments] = useState("");
-
-  const firstnameRef = useRef();
-  firstnameRef.current = props.person.firstname;
-
-  const lastnameRef = useRef();
-  lastnameRef.current = props.person.lastname;
-
-  const birthdateRef = useRef();
-  birthdateRef.current = props.person.birthdate;
-
-  const genderRef = useRef();
-  genderRef.current = props.person.gender;
-
-  const documentsRef = useRef();
-  documentsRef.current = props.person.documents;
-
+  const [uploadFiles, setUploadFiles] = useState([]);
+  const [fileNames, setFileNames] = useState([]);
 
   const validationSchema = Yup.object().shape({
     firstname: Yup.string().required("First Name is required"),
@@ -69,24 +51,14 @@ const PeopleEdit = (props) => {
     resolver: yupResolver(validationSchema),
   });
 
-  const onChangeFirstname = (e) => {
-    //setFirstname(e.target.value);
-    //firstnameRef.current = e.target.value;
-  };
-
   /**
    * SUBMIT
    */
   const onSubmit = async (data) => {
+    
     console.log(data);
-    console.log(data.documents[0].name);
-
+    
     console.log(JSON.stringify(data, null, 2));
-    setFirstname(data.firstname);
-    setLastname(data.lastname);
-    setBirthdate(data.birthdate);
-    setGender(data.gender);
-    setDocuments(data.documents[0].name);
 
     // data wrapper
     var jsontxt = {
@@ -96,7 +68,9 @@ const PeopleEdit = (props) => {
       gender: data.gender,
       documents: data.documents[0].name,
     };
+    
     console.log("ON SUBMIT JSON:" + JSON.stringify(jsontxt));
+    
     // Call service to add  new entry to db
     const response = await peopleService.savePerson(jsontxt);
     console.log("SERVICE RETURN:" + response.data.id);
@@ -114,16 +88,43 @@ const PeopleEdit = (props) => {
     }
   };
 
-  //loadInitData();
+  /**
+   * Callback method from upload component to update files selected.
+   * @param {*} files
+   * @param {*} formData
+   */
+  const uploadCallback = (files) => {
+    console.log("CALL BACK FROM UPLOADING ....", files);
+
+    let temp = [];
+    files.forEach((element) => {
+      temp.push(element);
+    });
+    setUploadFiles(temp);
+  };
+
+  /**
+   * Filter out file names from deletion
+   * @param {*} name
+   */
+  const removeUploadedFile = (name) => {
+    const tempArr = fileNames.filter((file) => file.name != name);
+    setFileNames(tempArr);
+  };
 
   // Similar to componentDidMount and componentDidUpdate:
   useEffect(() => {
-    console.log("USE-EFFECT IS CALLED " );
-    console.log("firstname:" + props.person.firstname);
-    //setFirstname(props.person.firstname)
-    //firstnameRef.current = props.person.firstname;
-    //loadInitData();
-  }, []); // Add empty array to force it run only one time.  no repeat after render
+    console.log("USE-EFFECT IS CALLED ");
+  
+    const tempArr = [];
+    if (props && props.person && props.person.documents) {
+      const files = props.person.documents.split(",");
+      files.map((file, index) => {
+        tempArr.push({ name: file.split("|")[0] });
+      });
+      setFileNames(tempArr);
+    }
+  }, [props]); // Add props to kick off execution when loaded
 
   return (
     <Modal {...props} size="lg" aria-labelledby="contained-modal-title-vcenter">
@@ -142,7 +143,7 @@ const PeopleEdit = (props) => {
                   <input
                     name="firstname"
                     type="text"
-                    defaultValue = {firstnameRef.current}
+                    defaultValue={props.person.firstname}
                     {...register("firstname")}
                     className={`form-control ${
                       errors.firstname ? "is-invalid" : ""
@@ -155,7 +156,7 @@ const PeopleEdit = (props) => {
                   <input
                     name="lastname"
                     type="text"
-                    defaultValue = {lastnameRef.current}
+                    defaultValue={props.person.lastname}
                     {...register("lastname")}
                     className={`form-control ${
                       errors.lastname ? "is-invalid" : ""
@@ -169,7 +170,7 @@ const PeopleEdit = (props) => {
                   <input
                     name="birthdate"
                     type="date"
-                    defaultValue = {birthdateRef.current}
+                    defaultValue={props.person.birthdate}
                     {...register("birthdate")}
                     className={`form-control ${
                       errors.birthdate ? "is-invalid" : ""
@@ -184,7 +185,7 @@ const PeopleEdit = (props) => {
                     className="form-select"
                     name="gender"
                     {...register("gender")}
-                    defaultValue = {genderRef.current}
+                    defaultValue={props.person.gender}
                   >
                     <option value="Male">Male</option>
                     <option value="Female">Female</option>
@@ -192,14 +193,38 @@ const PeopleEdit = (props) => {
                 </div>
               </div>
               <div className="row">
-                <div className="form-group w-75">
+                <div className="form-group w-50">
                   <label>Documents</label>
-                  <input
-                    type="file"
-                    name="documents"
-                    multiple
-                    {...register("documents")}
-                    className={`form-control`}
+
+                  {/** ///////////////////////////// */}
+                  {/** Uploaded files */}
+                  {/** ///////////////////////////// */}
+                  <div className="ms-4 me-4">
+                    {fileNames.map((file, index) => (
+                      <div className="row" key={index}>
+                        <div className="form-group w-75 row border border-primary">
+                          <span key={index}>{file.name}</span>
+                        </div>
+
+                        <div className="form-group w-25 row border border-primary">
+                          <button
+                            key={index}
+                            type="button"
+                            className="fa fa-times"
+                            onClick={() => removeUploadedFile(file.name)}
+                          />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/** ///////////////////////////// */}
+                  {/** Uploading files */}
+                  {/** ///////////////////////////// */}
+
+                  <FileUploadEx
+                    key={fileUploadRerenderKey}
+                    callback={uploadCallback}
                   />
                 </div>
               </div>

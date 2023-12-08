@@ -41,17 +41,9 @@ const FileUploadEx = (props) => {
           {/* Display the files to be uploaded */}
           <div>
             <div className="ms-4 me-4">
-              <div className="row">
-                <div className="form-group w-75 row border border-primary">
-                  <label>Document Name(s)</label>
-                </div>
-
-                <div className="form-group w-25 row border border-primary">
-                  <label>Action</label>
-                </div>
-              </div>
+              
               {fileNames.map((name, index) => (
-                <div className="row">
+                <div className="row" key={index}>
                   <div className="form-group w-75 row border border-primary">
                     <span key={index}>{name}</span>
                   </div>
@@ -68,6 +60,41 @@ const FileUploadEx = (props) => {
               ))}
             </div>
           </div>
+
+
+
+          {/**
+           * 
+           * <div>
+            <div className="ms-4 me-4">
+              <div className="row">
+                <div className="form-group w-75 row border border-primary">
+                  <label>Document Name(s)</label>
+                </div>
+
+                <div className="form-group w-25 row border border-primary">
+                  <label>Action</label>
+                </div>
+              </div>
+              {fileNames.map((name, index) => (
+                <div className="row" key={index}>
+                  <div className="form-group w-75 row border border-primary">
+                    <span key={index}>{name}</span>
+                  </div>
+
+                  <div className="form-group w-25 row border border-primary">
+                    <button
+                      key={index}
+                      type="button"
+                      className="fa fa-times"
+                      onClick={() => removeFile(name)}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+           */}
 
           {/* Provide a drop zone and an alternative button inside it to upload files. */}
           <div

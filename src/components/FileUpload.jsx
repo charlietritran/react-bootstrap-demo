@@ -18,6 +18,7 @@ const FileUpload = (props) => {
   const [fileInfos, setFileInfos] = useState([]);
 
   useEffect(() => {
+    console.log("FILE UPLOAD USE-EFFECT IS CALLED");
     UploadService.getFiles().then((response) => {
       setFileInfos(response.data);
     });

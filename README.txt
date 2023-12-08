@@ -51,3 +51,4 @@ $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 - https://sanjanaraj11.medium.com/upload-files-and-multiple-data-together-using-formdata-in-react-8a0bdf891da0
 - https://stackoverflow.com/questions/32427212/how-to-prevent-form-submit-when-choosing-a-file-with-input-type-file
 - https://react-bootstrap-table.github.io/react-bootstrap-table2/storybook/index.html?selectedKind=Work%20on%20Columns&selectedStory=Column%20Formatter%20with%20Custom%20Data&full=0&addons=1&stories=1&panelRight=0&addonPanel=storybook%2Factions%2Factions-panel
+- react-form-hook: https://www.freecodecamp.org/news/how-to-create-forms-in-react-using-react-hook-form/
