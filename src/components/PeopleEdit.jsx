@@ -25,15 +25,15 @@ import FileUploadEx from "./FileUploadEx";
  *
  */ ////////////////////////////////////////////////////////////////
 const PeopleEdit = (props) => {
-
   console.log("PEOPLE EDIT IS ACCESSED:" + JSON.stringify(props));
   const peopleService = new PeopleService();
   const [fileUploadRerenderKey, setFileUploadRerenderKey] = useState(
     Math.random()
   );
 
+  const [person, setPerson] = useState(props.person);
   const [uploadFiles, setUploadFiles] = useState([]);
-  const [fileNames, setFileNames] = useState([]);
+  const [uploadedFiles, setUploadedFiles] = useState([]);
 
   const validationSchema = Yup.object().shape({
     firstname: Yup.string().required("First Name is required"),
@@ -55,35 +55,39 @@ const PeopleEdit = (props) => {
    * SUBMIT
    */
   const onSubmit = async (data) => {
-    
-    console.log(data);
-    
+
+
+    console.log("ON SUBMIT IS CALLED" + data);
+
     console.log(JSON.stringify(data, null, 2));
 
     // data wrapper
     var jsontxt = {
+      id: person.id,
       firstname: data.firstname,
       lastname: data.lastname,
       birthdate: data.birthdate,
       gender: data.gender,
-      documents: data.documents[0].name,
+      deletedFiles: uploadedFiles.filter((file) => file.deleted == true),
     };
-    
+
+    console.log("ON SUBMIT UPLOADED FILES ....", uploadFiles);
     console.log("ON SUBMIT JSON:" + JSON.stringify(jsontxt));
-    
+
     // Call service to add  new entry to db
-    const response = await peopleService.savePerson(jsontxt);
-    console.log("SERVICE RETURN:" + response.data.id);
+    const response = await peopleService.updatePersonMultipart(
+      jsontxt,
+      uploadFiles
+    );
 
     // If success, notify and reset fields
     if (response.data) {
       peopleService.getPersonById(response.data.id).then((result) => {
         console.log(result.data);
-        var tempArr = [];
-        tempArr.push(result.data);
-        //setPeople(tempArr);
+        dataInit(result.data);
       });
-      reset();
+
+      //reset();
       //handleShow();
     }
   };
@@ -107,22 +111,40 @@ const PeopleEdit = (props) => {
    * Filter out file names from deletion
    * @param {*} name
    */
-  const removeUploadedFile = (name) => {
-    const tempArr = fileNames.filter((file) => file.name != name);
-    setFileNames(tempArr);
+  const removeUploadedFiles = (name) => {
+    const tempArr = uploadedFiles.map((file) => {
+      if (file.name == name) {
+        file.deleted = true;
+      }
+      return file;
+    });
+    setUploadedFiles(tempArr);
+  };
+
+  const dataInit = (person) => {
+    // set person
+    setPerson(person);
+
+    // set uploaded files
+    const tempArr = [];
+    const files = person.documents.split(",");
+    files.map((file, index) => {
+      tempArr.push({
+        name: file.split("|")[0],
+        url: file.split("|")[1],
+        deleted: false,
+      });
+    });
+    setUploadedFiles(tempArr);
   };
 
   // Similar to componentDidMount and componentDidUpdate:
   useEffect(() => {
     console.log("USE-EFFECT IS CALLED ");
-  
-    const tempArr = [];
+
+    // Make sure props has valid data
     if (props && props.person && props.person.documents) {
-      const files = props.person.documents.split(",");
-      files.map((file, index) => {
-        tempArr.push({ name: file.split("|")[0] });
-      });
-      setFileNames(tempArr);
+      dataInit(props.person);
     }
   }, [props]); // Add props to kick off execution when loaded
 
@@ -143,7 +165,7 @@ const PeopleEdit = (props) => {
                   <input
                     name="firstname"
                     type="text"
-                    defaultValue={props.person.firstname}
+                    defaultValue={person.firstname}
                     {...register("firstname")}
                     className={`form-control ${
                       errors.firstname ? "is-invalid" : ""
@@ -156,7 +178,7 @@ const PeopleEdit = (props) => {
                   <input
                     name="lastname"
                     type="text"
-                    defaultValue={props.person.lastname}
+                    defaultValue={person.lastname}
                     {...register("lastname")}
                     className={`form-control ${
                       errors.lastname ? "is-invalid" : ""
@@ -170,7 +192,7 @@ const PeopleEdit = (props) => {
                   <input
                     name="birthdate"
                     type="date"
-                    defaultValue={props.person.birthdate}
+                    defaultValue={person.birthdate}
                     {...register("birthdate")}
                     className={`form-control ${
                       errors.birthdate ? "is-invalid" : ""
@@ -185,7 +207,7 @@ const PeopleEdit = (props) => {
                     className="form-select"
                     name="gender"
                     {...register("gender")}
-                    defaultValue={props.person.gender}
+                    defaultValue={person.gender}
                   >
                     <option value="Male">Male</option>
                     <option value="Female">Female</option>
@@ -200,7 +222,26 @@ const PeopleEdit = (props) => {
                   {/** Uploaded files */}
                   {/** ///////////////////////////// */}
                   <div className="ms-4 me-4">
-                    {fileNames.map((file, index) => (
+                    {uploadedFiles
+                      .filter((file) => file.deleted == false)
+                      .map((file, index) => (
+                        <div className="row" key={index}>
+                          <div className="form-group w-75 row border border-primary">
+                            <span key={index}>{file.name}</span>
+                          </div>
+
+                          <div className="form-group w-25 row border border-primary">
+                            <button
+                              key={index}
+                              type="button"
+                              className="fa fa-times"
+                              onClick={() => removeUploadedFiles(file.name)}
+                            />
+                          </div>
+                        </div>
+                      ))}
+
+                    {/*uploadedFiles.map((file, index) => (
                       <div className="row" key={index}>
                         <div className="form-group w-75 row border border-primary">
                           <span key={index}>{file.name}</span>
@@ -211,11 +252,11 @@ const PeopleEdit = (props) => {
                             key={index}
                             type="button"
                             className="fa fa-times"
-                            onClick={() => removeUploadedFile(file.name)}
+                            onClick={() => removeUploadedFiles(file.name)}
                           />
                         </div>
                       </div>
-                    ))}
+                    ))*/}
                   </div>
 
                   {/** ///////////////////////////// */}

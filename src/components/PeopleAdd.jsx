@@ -102,13 +102,12 @@ const PeopleAdd = () => {
       lastname: data.lastname,
       birthdate: data.birthdate,
       gender: data.gender,
-      documents: "",
     };
 
     console.log("ON SUBMIT UPLOADED FILES ....", uploadFiles);
 
     // Call service to add  new entry to db
-    const response = await peopleService.savePersonMultiModel(
+    const response = await peopleService.savePersonMultipart(
       jsontxt,
       uploadFiles
     );

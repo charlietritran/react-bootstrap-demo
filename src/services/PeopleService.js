@@ -37,7 +37,7 @@ class PeopleService {
    * RETURN:
    * @param {*} person
    */
-  async savePersonMultiModel(person, files) {
+  async savePersonMultipart(person, files) {
     console.log("@@@ =>>> SAVE PERSON SERVICE STARTS - URL:" + http.BASE_URL);
     console.log(
       "@@@ =>>> SAVE PERSON SERVICE JSON - URL:" + JSON.stringify(person)
@@ -66,7 +66,7 @@ class PeopleService {
 
       let res = await axios({
         method: "post", //put
-        url: http.BASE_URL + "/api/person/multi/model",
+        url: http.BASE_URL + "/api/person/multipart",
         headers: { "content-type": "multipart/form-data" },
         data: formData,
       });
@@ -78,6 +78,65 @@ class PeopleService {
       throw error;
     } finally {
       console.log("DONE SAVE PERSON WITH FILES ");
+    }
+  }
+
+  /**
+   * UPDATE PERSON
+   * RETURN:
+   * @param {*} person
+   */
+  async updatePersonMultipart(person, files) {
+    console.log("@@@ =>>> UPDATE PERSON SERVICE STARTS - URL:" + http.BASE_URL);
+    console.log(
+      "@@@ =>>> UPDATE PERSON SERVICE JSON - PERSON:" + JSON.stringify(person)
+    );
+    console.log("@@@ =>>> UPDATE PERSON SERVICE STARTS - FILES:" + files);
+
+    try {
+      // Form Data
+      const formData = new FormData();
+
+      // upload files
+      files.map((file) => {
+        formData.append("documents", file);
+      });
+
+      // deleted files
+      let deletedFiles = "";
+      person.deletedFiles.map((file) => {
+        //deletedFiles += "," + file.name;
+        formData.append("deletedFiles", file.name);
+      });
+
+      //formData.append("deletedFiles", deletedFiles.substring(1));
+
+      // person formdata
+      formData.append("firstname", person.firstname);
+      formData.append("lastname", person.lastname);
+      formData.append("gender", person.gender);
+      formData.append("birthdate", person.birthdate);
+
+      const config = {
+        headers: {
+          "content-type": "multipart/form-data",
+        },
+      };
+
+      let res = await axios({
+        method: "post", //put
+        url: http.BASE_URL + "/api/person/multipart/" + person.id,
+        headers: { "content-type": "multipart/form-data" },
+        data: formData,
+      });
+
+      return res;
+    } catch (error) {
+      console.log("UPDATE PERSON ERROR:" + error.message);
+
+      throw error;
+    } finally {
+      console.log("DONE UPDATE PERSON WITH FILES ");
     }
   }
 
