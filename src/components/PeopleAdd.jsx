@@ -216,11 +216,7 @@ const PeopleAdd = () => {
 
   // Result table columns
   const columns = [
-    {
-      dataField: "id",
-      text: "Person ID",
-      sort: true,
-    },
+
     {
       dataField: "firstname",
       text: "First Name",

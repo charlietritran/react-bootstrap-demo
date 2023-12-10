@@ -45,11 +45,7 @@ const PeopleSearch = () => {
 
   // DEFINE COLUMN HEADERS OR TABLE
   const columns = [
-    {
-      dataField: "id",
-      text: "Person ID",
-      sort: true,
-    },
+
     {
       dataField: "firstname",
       text: "First Name",
