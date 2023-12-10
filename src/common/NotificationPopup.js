@@ -8,10 +8,8 @@ import { Modal, Button } from "react-bootstrap";
  */
 const NotificationPopup = ({ showModal, hideModal, message, title, type }) => {
   return (
-    <Modal show={showModal} onHide={hideModal}>
-      <Modal.Header closeButton>
-        <Modal.Title>{title}</Modal.Title>
-      </Modal.Header>
+    <Modal show={showModal} onHide={hideModal} centered>
+      <Modal.Header></Modal.Header>
       <Modal.Body>
         {type === "success" ? (
           <div className="alert alert-success">{message}</div>

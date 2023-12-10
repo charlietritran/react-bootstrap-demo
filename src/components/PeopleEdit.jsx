@@ -14,6 +14,7 @@ import "react-bootstrap-table-next/dist/react-bootstrap-table2.min.css";
 
 import PeopleService from "../services/PeopleService.js";
 import FileUploadEx from "./FileUploadEx";
+import NotificationPopup from "../common/NotificationPopup.js";
 
 /** /////////////////////////////////////////////////////////////////
  * COMPONENT: People Add
@@ -35,6 +36,8 @@ const PeopleEdit = (props) => {
   const [uploadFiles, setUploadFiles] = useState([]);
   const [uploadedFiles, setUploadedFiles] = useState([]);
 
+  const [showModalUpdateResult, setShowModalUpdateResult] = useState(false);
+
   const validationSchema = Yup.object().shape({
     firstname: Yup.string().required("First Name is required"),
     lastname: Yup.string().required("Last Name is required"),
@@ -55,11 +58,9 @@ const PeopleEdit = (props) => {
    * SUBMIT
    */
   const onSubmit = async (data) => {
-
-
     console.log("ON SUBMIT IS CALLED" + data);
 
-    console.log(JSON.stringify(data, null, 2));
+    //console.log(JSON.stringify(data, null, 2));
 
     // data wrapper
     var jsontxt = {
@@ -85,21 +86,30 @@ const PeopleEdit = (props) => {
       peopleService.getPersonById(response.data.id).then((result) => {
         console.log(result.data);
         dataInit(result.data);
-      });
 
-      //reset();
-      //handleShow();
+        // reload upload dialog to clear everything
+        setFileUploadRerenderKey(Math.random()); // rerender fileupload by update component key
+
+        // show success msg
+        setShowModalUpdateResult(true);
+      });
     }
   };
 
   /**
-   * Callback method from upload component to update files selected.
+   * HIDE UPDATE RESULT NOTIFICATION
+   */
+  const hideModalUpdateResult = () => {
+    setShowModalUpdateResult(false);
+  };
+
+  /**
+   * Callback FROM FILE UPLOAD COMPONENT
    * @param {*} files
    * @param {*} formData
    */
   const uploadCallback = (files) => {
     console.log("CALL BACK FROM UPLOADING ....", files);
-
     let temp = [];
     files.forEach((element) => {
       temp.push(element);
@@ -145,6 +155,7 @@ const PeopleEdit = (props) => {
     // Make sure props has valid data
     if (props && props.person && props.person.documents) {
       dataInit(props.person);
+      reset();
     }
   }, [props]); // Add props to kick off execution when loaded
 
@@ -167,10 +178,8 @@ const PeopleEdit = (props) => {
                     type="text"
                     defaultValue={person.firstname}
                     {...register("firstname")}
-                    className={`form-control ${
-                      errors.firstname ? "is-invalid" : ""
-                    }`}
                   />
+                  <p>{errors.firstname ? errors.firstname.message : ""}</p>
                 </div>
 
                 <div className="form-group w-50">
@@ -184,6 +193,7 @@ const PeopleEdit = (props) => {
                       errors.lastname ? "is-invalid" : ""
                     }`}
                   />
+                  <p>{errors.lastname ? errors.lastname.message : ""}</p>
                 </div>
               </div>
               <div className="row">
@@ -198,6 +208,7 @@ const PeopleEdit = (props) => {
                       errors.birthdate ? "is-invalid" : ""
                     }`}
                   />
+                  <p>{errors.birthdate ? errors.birthdate.message : ""}</p>
                 </div>
 
                 <div className="form-group w-50">
@@ -240,23 +251,6 @@ const PeopleEdit = (props) => {
                           </div>
                         </div>
                       ))}
-
-                    {/*uploadedFiles.map((file, index) => (
-                      <div className="row" key={index}>
-                        <div className="form-group w-75 row border border-primary">
-                          <span key={index}>{file.name}</span>
-                        </div>
-
-                        <div className="form-group w-25 row border border-primary">
-                          <button
-                            key={index}
-                            type="button"
-                            className="fa fa-times"
-                            onClick={() => removeUploadedFiles(file.name)}
-                          />
-                        </div>
-                      </div>
-                    ))*/}
                   </div>
 
                   {/** ///////////////////////////// */}
@@ -284,6 +278,18 @@ const PeopleEdit = (props) => {
                 </div>
               </div>
             </form>
+          </div>
+          {/** ////////////////////////////////////////// */}
+          {/** ACTION RESULT NOTIFICATION */}
+          {/** ////////////////////////////////////////// */}
+          <div>
+            <NotificationPopup
+              showModal={showModalUpdateResult}
+              hideModal={hideModalUpdateResult}
+              message={"Update is completed."}
+              title={"Success"}
+              type={"success"}
+            />
           </div>
         </Container>
       </Modal.Body>

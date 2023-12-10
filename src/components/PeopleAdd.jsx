@@ -290,6 +290,7 @@ const PeopleAdd = () => {
                   errors.firstname ? "is-invalid" : ""
                 }`}
               />
+              <p>{errors.firstname ? errors.firstname.message : ""}</p>
             </div>
 
             <div className="form-group w-25">
@@ -302,6 +303,7 @@ const PeopleAdd = () => {
                   errors.lastname ? "is-invalid" : ""
                 }`}
               />
+              <p>{errors.lastname ? errors.lastname.message : ""}</p>
             </div>
           </div>
           <div className="row">
@@ -316,6 +318,7 @@ const PeopleAdd = () => {
                   errors.birthdate ? "is-invalid" : ""
                 }`}
               />
+              <p>{errors.birthdate ? errors.birthdate.message : ""}</p>
             </div>
 
             <div className="form-group w-25">
@@ -376,7 +379,18 @@ const PeopleAdd = () => {
           columns={columns}
         />
       </div>
-      <div className="modal-dialog modal-sm">
+
+      <div>
+        <NotificationPopup
+          showModal={show}
+          hideModal={handleClose}
+          message={"Person has been added successfully."}
+          title={"Success"}
+          type={"success"}
+        />
+      </div>
+
+{/** <div className="modal-dialog modal-sm">
         <Modal show={show} onHide={handleClose}>
           <Modal.Header closeButton>
             <Modal.Title>Success</Modal.Title>
@@ -388,7 +402,8 @@ const PeopleAdd = () => {
             </Button>
           </Modal.Footer>
         </Modal>
-      </div>
+      </div>*/}
+      
       <div>
         <PeopleEdit
           show={modalShow}
@@ -412,7 +427,10 @@ const PeopleAdd = () => {
         />
       </div>
       {/** ////////////////////////////////////////// */}
-      {/** ACTION RESULT NOTIFICATION */}
+      {/** ACTION RESULT NOTIFICATION 
+       *  TODO: Need dynamic data for message/title/type: success/failure?
+       * 
+      */}
       {/** ////////////////////////////////////////// */}
       <div>
         <NotificationPopup
@@ -420,7 +438,7 @@ const PeopleAdd = () => {
           hideModal={hideModalDelResult}
           message={"Delettion is completed."}
           title={"Success"}
-          type={"danger"}
+          type={"success"}
         />
       </div>
     </div>

@@ -233,7 +233,9 @@ const PeopleSearch = () => {
           show={showModalEdit}
           person={person}
           fn={person.firstname}
-          onHide={() => setShowModalEdit(false)}
+          onHide={() => {
+            loadPeople();
+            setShowModalEdit(false)}}
         />
       </div>
       {/** ////////////////////////////////////////// */}
@@ -259,7 +261,7 @@ const PeopleSearch = () => {
           hideModal={hideModalDelResult}
           message={"Delettion is completed."}
           title={"Success"}
-          type={"danger"}
+          type={"Success"}
         />
       </div>
     </div>
